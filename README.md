@@ -30,9 +30,10 @@ See related links below for feature policy details.
 We are proposing a simple API to test the idea: if one frame specifies a new
 feature policy when sending a `postMessage` to a another frame, the new policy
 becomes effective on the receiver frame upon receiving the message.  To make
-this in-line with existing feature policy hierarchy, we can add the constraint
-that the receiver frame has to be a child frame (or more generally a descendent
-frame) of the sender.
+this in-line with existing feature policy hierarchy, the receiver frame has to
+be a child frame of the sender; the `allow` parameter would be ignored
+otherwise.  (The strict parent-to-child constraint would prevent abusive
+propagation of feature policies between, say, sibling frames.)
 
 ```javascript
 // Script for top frame
@@ -40,12 +41,12 @@ frame) of the sender.
 let targetWindow = frames[0];
 
 function playInSubframe() {
-    targetWindow.postMessage("play_video", {allow: "autoplay *"});
+    targetWindow.postMessage("play_video", {allow: "autoplay"});
     setTimeout(1000, pauseInSubframe);
 }
 
 function pauseInSubframe() {
-    targetWindow.postMessage("pause_video", {allow: "autoplay 'none'"});
+    targetWindow.postMessage("pause_video", {allow: ""});
 }
 
 document.getElementById("button").addEventListener("click", playInSubframe);
@@ -63,14 +64,18 @@ function messageReceiver(e) {
         videoElement.play();
     else if (e.data === "pause_video")
         videoElement.pause();
-
 }
 
 window.addEventListener("message", messageReceiver);
 ```
+
+The `allow` parameter can contain any feature-policy name, see Related links
+below.
 
 
 ## Related links
 
 - [Introduction to Feature
   Policy](https://developers.google.com/web/updates/2018/06/feature-policy).
+
+- [List of feature policies in Chromium](https://cs.chromium.org/chromium/src/third_party/blink/renderer/core/feature_policy/feature_policy_features.json5?rcl=d118d0cb1f880768e0612ddf31b5036785cab614&l=28).
