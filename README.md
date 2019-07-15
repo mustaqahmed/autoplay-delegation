@@ -69,8 +69,25 @@ function messageReceiver(e) {
 window.addEventListener("message", messageReceiver);
 ```
 
-The `allow` parameter can contain any feature-policy name, see Related links
-below.
+### Why just autoplay?
+
+While the `allow` parameter can possibly contain any feature-policy name (see
+Related links below), we are not pursuing this general direction now because
+this seems complicated from the perspective of effective feature policies.  In
+Security Considerations below, we will oned highlight one security aspect too.
+
+
+## Security considerations
+
+For autoplay, dynamic delegation seem safe since the host frame can't access any
+information from a cross-origin subframe.
+
+Howver this is not true for dynamic delegetion any _general capability_ because
+it would give the host frame fine-grained control over the behavior of
+cross-origin frames.  For example, it could allow an attacker to selectively
+enable/disable the features controlled by feature policies and put a
+cross-origin window in an inconsistent state, resulting in unexpected behavior
+and potentially leaking interesting state from the subframe.
 
 
 ## Related links
