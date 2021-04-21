@@ -1,3 +1,7 @@
+This proposal is deprecated, replaced by [WICG/capability-delegation](https://github.com/WICG/capability-delegation)
+
+---
+
 # Dynamic Delegation of Autoplay Capability
 A tentative API to experiment with dynamic overrides for "autoplay" feature
 policy.
